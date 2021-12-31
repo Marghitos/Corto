@@ -4,7 +4,8 @@ using Corto.Common.DTO;
 using Corto.Common.Interfaces;
 using Corto.Common.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NamedServices.Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,18 +19,16 @@ namespace Corto.API.Controllers
         private readonly IKeyRangeService _keyRangeService;
         private readonly IUrlManagerService _urlManagerService;
         private readonly IAlgorithmService _algorithmService;
-        private readonly IAdapter<UrlMangerServiceResponse, ApiResponse> _urlManagerServiceResponseToApiResponse;
+        private readonly IAdapter<UrlMangerServiceResponse, ApiResponse> _urlManagerServiceResponseExpandToApiResponse;
+        private readonly IAdapter<UrlMangerServiceResponse, ApiResponse> _urlManagerServiceResponseShortenToApiResponse;
 
-        public UrlShortenerController(
-            IKeyRangeService keyRangeService,
-            IUrlManagerService urlManagerService,
-            IAlgorithmService algorithmService,
-            IAdapter<UrlMangerServiceResponse, ApiResponse> urlManagerServiceResponseToApiResponse)
+        public UrlShortenerController(IServiceProvider serviceProvider)
         {
-            _keyRangeService = keyRangeService;
-            _urlManagerService = urlManagerService;
-            _algorithmService = algorithmService;
-            _urlManagerServiceResponseToApiResponse = urlManagerServiceResponseToApiResponse;
+            _keyRangeService = serviceProvider.GetService<IKeyRangeService>();
+            _urlManagerService = serviceProvider.GetService<IUrlManagerService>();
+            _algorithmService = serviceProvider.GetService<IAlgorithmService>();
+            _urlManagerServiceResponseExpandToApiResponse = serviceProvider.GetNamedService<IAdapter<UrlMangerServiceResponse, ApiResponse>>("Expand");
+            _urlManagerServiceResponseShortenToApiResponse = serviceProvider.GetNamedService<IAdapter<UrlMangerServiceResponse, ApiResponse>>("Shorten");
         }
 
         [HttpGet]
@@ -52,7 +51,7 @@ namespace Corto.API.Controllers
             };
             var response = await _urlManagerService.InsertShortenedUrlAsync(urlItem);
 
-            return _urlManagerServiceResponseToApiResponse.Adapt(response);
+            return _urlManagerServiceResponseShortenToApiResponse.Adapt(response);
         }
 
         [HttpGet]
@@ -68,7 +67,7 @@ namespace Corto.API.Controllers
             var decodedId = _algorithmService.RestoreSeedFromString(url).ToString();
             var response = await _urlManagerService.GetOriginalUrlAsync(decodedId);
 
-            return _urlManagerServiceResponseToApiResponse.Adapt(response);
+            return _urlManagerServiceResponseExpandToApiResponse.Adapt(response);
         }
     }
 }

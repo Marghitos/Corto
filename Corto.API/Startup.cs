@@ -38,6 +38,7 @@ namespace Corto.API
             services.AddSingleton<ISqlRepository, SqlRepository>(s => new SqlRepository(sqlServerName, sqlDatabaseName, sqlUserName, sqlPassword, sqlPort));
             //END - SqlRepository
 
+
             //START - CosmosDbRepository
             string cosmosDbDatabaseName = Configuration.GetSection("CosmosDb:DatabaseName").Value;
             string cosmosDbContainerName = Configuration.GetSection("CosmosDb:ContainerName").Value;
@@ -46,6 +47,7 @@ namespace Corto.API
 
             services.AddSingleton<ICosmosDbRepository<UrlItem>, CosmosDbRepository<UrlItem>>(c => new CosmosDbRepository<UrlItem>(cosmosDbDatabaseName, cosmosDbContainerName, cosmosDbAccount, cosmosDbKey));
             //END - CosmosDbRepository
+
 
             //START - UrlManagerService
             int expiryDaysCount = int.TryParse(Configuration.GetSection("Settings:ExpiryDaysCount").Value, out int result) ? result : 60;
@@ -65,6 +67,7 @@ namespace Corto.API
                 );
             //END - UrlManagerService
 
+
             //START - KeyRangeService
             services.AddSingleton<IAdapter<DataRow, KeyRangeServiceResponse>, DataRowToKeyRangeServiceResponseAdapter>();
             services.AddSingleton<IKeyRangeService, KeyRangeService>(
@@ -73,13 +76,24 @@ namespace Corto.API
                 );
             //END - KeyRangeService
 
+
             //START - AlgorithmService
             services.AddSingleton<IAlgorithmService, AlgorithmService>();
             //END - AlgorithmService
 
+
             //START UrlShortenerController
-            services.AddSingleton<IAdapter<UrlMangerServiceResponse, ApiResponse>, UrlManagerServiceResponseToApiResponseAdapter>();
+            string baseUrl = Configuration.GetSection("Settings:baseUrl").Value;
+
+            services.AddNamedSingleton<IAdapter<UrlMangerServiceResponse, ApiResponse>, UrlManagerServiceResponseShortenToApiResponseAdapter>("Shorten",
+                u =>
+                   new UrlManagerServiceResponseShortenToApiResponseAdapter(baseUrl)
+                );
+            services.AddNamedSingleton<IAdapter<UrlMangerServiceResponse, ApiResponse>, UrlManagerServiceResponseExpandToApiResponseAdapter>("Expand");
             //END UrlShortenerController
+
+
+            services.AddSwaggerGen();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -87,6 +101,13 @@ namespace Corto.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+                });
+                app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             }
 
             app.UseHttpsRedirection();
@@ -99,6 +120,8 @@ namespace Corto.API
             {
                 endpoints.MapControllers();
             });
+
+
         }
     }
 }

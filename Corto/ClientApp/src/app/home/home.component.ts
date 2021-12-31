@@ -28,7 +28,7 @@ export class HomeComponent {
         let params = new HttpParams().set("url", url);
         this._http.get<ApiResponse>(environment.apiUrl + 'api/url-shortener/shorten-url', { params: params }).subscribe(result => {
             this._shortenedUrl = result;
-            this.updatedUrl = this._baseUrl + this._shortenedUrl.url;
+            this.updatedUrl = this._shortenedUrl.url;
         }, error => console.error(error));
         return url;
     }
