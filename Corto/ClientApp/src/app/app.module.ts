@@ -6,6 +6,8 @@ import { RouterModule, UrlMatcher, UrlMatchResult, UrlSegment } from '@angular/r
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { RedirectComponent } from './redirect/redirect.component';
+import { NgxSpinnerModule } from "ngx-spinner";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     declarations: [
@@ -17,9 +19,11 @@ import { RedirectComponent } from './redirect/redirect.component';
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
         HttpClientModule,
         FormsModule,
+        BrowserAnimationsModule,
+        NgxSpinnerModule,
         RouterModule.forRoot([
             {
-                matcher: matchCustomUrl, 
+                matcher: matchCustomUrl,
                 component: RedirectComponent
             },
             { path: '', component: HomeComponent, pathMatch: 'full' }
