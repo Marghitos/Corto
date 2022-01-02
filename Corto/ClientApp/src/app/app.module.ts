@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { RedirectComponent } from './redirect/redirect.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ReactiveFormsModule,
         BrowserAnimationsModule,
         NgxSpinnerModule,
+        ClipboardModule,
         RouterModule.forRoot([
             {
                 matcher: matchCustomUrl,

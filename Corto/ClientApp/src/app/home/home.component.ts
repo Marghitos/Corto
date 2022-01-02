@@ -4,6 +4,7 @@ import { ActivatedRoute, ParamMap, RouterModule, UrlSegment } from '@angular/rou
 import { environment } from '../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ClipboardModule, ClipboardService } from 'ngx-clipboard';
 
 @Component({
     selector: 'app-home',
@@ -15,22 +16,29 @@ export class HomeComponent {
     private _spinner: NgxSpinnerService;
     form: FormGroup = new FormGroup({});
     public updatedUrl: string;
+    private _clipboardService: ClipboardService;
 
     constructor(
         http: HttpClient,
         route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        spinner: NgxSpinnerService
+        spinner: NgxSpinnerService,
+        clipboardService: ClipboardService
     ) {
         this._http = http;
         this._spinner = spinner;
         this.form = formBuilder.group({
             url: ['', [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]]
         });
+        this._clipboardService = clipboardService;
     }
 
     get f() {
         return this.form.controls;
+    }
+
+    copyContent() {
+        this._clipboardService.copyFromContent(this.updatedUrl)
     }
 
     onSubmit() {

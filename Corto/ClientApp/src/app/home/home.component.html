@@ -17,9 +17,14 @@
     </div>
 </form>
 <div class="row w-75">
-    <div class="col-sm-12">
+    <div class="col-sm-6">
         <a href="{{updatedUrl}}" class="shortened-url">{{updatedUrl}}</a>
     </div>
+    <div class="col-sm-6">
+        <button class="btn btn-primary" *ngIf="updatedUrl.length>0" (click)="copyContent()">Copy to Clipboard</button>
+    </div>
 </div>
-<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="ball-fall" [fullScreen]="false"><p style="color: white"> Generating </p></ngx-spinner>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="ball-fall" [fullScreen]="false">
+    <p style="color: white">Generating</p>
+</ngx-spinner>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
