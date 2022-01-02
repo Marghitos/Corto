@@ -1,16 +1,25 @@
-<h3 style="">Corto - Url shortener</h3>
-<div class="row w-75 p-3">
-    <div class="col-sm-6">
-        <input type="text" class="form-control" placeholder="Url to shorten" [(ngModel)]="originalUrl">
+<h3>Corto - Url shortener</h3>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group row w-75">
+        <div class="col-sm-6 mt-2">
+            <input formControlName="url"
+                   id="url"
+                   type="text"
+                   class="form-control">
+            <div *ngIf="f.url.touched && f.url.invalid" class="alert alert-danger">
+                <div *ngIf="f.url.errors.required">URL is required.</div>
+                <div *ngIf="f.url.errors.pattern">Please enter valid url.</div>
+            </div>
+        </div>
+        <div class="col-sm-6 mt-2">
+            <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Shorten</button>
+        </div>
     </div>
-    <div class="col-sm-6">
-        <button type="button" class="btn btn-primary" style="" (click)="GetShortenedUrl(originalUrl)">Shorten</button>
-    </div>
-    <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="ball-fall" [fullScreen]="false"><p style="color: white"> Generating </p></ngx-spinner>
-</div>
-<div class="row w-75 p-3">
+</form>
+<div class="row w-75">
     <div class="col-sm-12">
         <a href="{{updatedUrl}}" class="shortened-url">{{updatedUrl}}</a>
     </div>
 </div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="ball-fall" [fullScreen]="false"><p style="color: white"> Generating </p></ngx-spinner>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { ActivatedRoute, ParamMap, RouterModule, UrlSegment } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-home',
@@ -12,28 +13,34 @@ export class HomeComponent {
     private _http: HttpClient;
     private _shortenedUrl: ApiResponse;
     private _spinner: NgxSpinnerService;
+    form: FormGroup = new FormGroup({});
+    public updatedUrl: string;
 
     constructor(
         http: HttpClient,
         route: ActivatedRoute,
+        private formBuilder: FormBuilder,
         spinner: NgxSpinnerService
     ) {
         this._http = http;
         this._spinner = spinner;
+        this.form = formBuilder.group({
+            url: ['', [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]]
+        });
     }
 
-    public updatedUrl: string;
-    public originalUrl; string;
+    get f() {
+        return this.form.controls;
+    }
 
-    GetShortenedUrl(url: string) {
-        let params = new HttpParams().set("url", url);
+    onSubmit() {
+        let params = new HttpParams().set("url", this.form.value.url);
         this._spinner.show();
         this._http.get<ApiResponse>(environment.apiUrl + 'api/url-shortener/shorten-url', { params: params }).subscribe(result => {
             this._spinner.hide();
             this._shortenedUrl = result;
             this.updatedUrl = this._shortenedUrl.url;
         }, error => console.error(error));
-        return url;
     }
 }
 
