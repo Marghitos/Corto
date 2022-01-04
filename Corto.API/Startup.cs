@@ -7,6 +7,7 @@ using Corto.Common.DTO;
 using Corto.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -85,13 +86,12 @@ namespace Corto.API
             //START UrlShortenerController
             string baseUrl = Configuration.GetSection("Settings:baseUrl").Value;
 
-            services.AddNamedSingleton<IAdapter<UrlMangerServiceResponse, ApiResponse>, UrlManagerServiceResponseShortenToApiResponseAdapter>("Shorten",
+            services.AddNamedSingleton<IAdapter<UrlMangerServiceResponse, JsonResult>, UrlManagerServiceResponseShortenToApiResponseAdapter>("Shorten",
                 u =>
                    new UrlManagerServiceResponseShortenToApiResponseAdapter(baseUrl)
                 );
-            services.AddNamedSingleton<IAdapter<UrlMangerServiceResponse, ApiResponse>, UrlManagerServiceResponseExpandToApiResponseAdapter>("Expand");
+            services.AddNamedSingleton<IAdapter<UrlMangerServiceResponse, JsonResult>, UrlManagerServiceResponseExpandToApiResponseAdapter>("Expand");
             //END UrlShortenerController
-
 
             services.AddSwaggerGen();
         }

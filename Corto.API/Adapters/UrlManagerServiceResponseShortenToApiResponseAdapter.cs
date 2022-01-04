@@ -1,12 +1,11 @@
-﻿using Corto.BL.Models;
-using Corto.Common.DTO;
+﻿using Corto.Common.DTO;
 using Corto.Common.Interfaces;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace Corto.API.Controllers.Adapters
 {
-    public class UrlManagerServiceResponseShortenToApiResponseAdapter : IAdapter<UrlMangerServiceResponse, ApiResponse>
+    public class UrlManagerServiceResponseShortenToApiResponseAdapter : IAdapter<UrlMangerServiceResponse, JsonResult>
     {
         private readonly string _baseUrl;
 
@@ -15,16 +14,15 @@ namespace Corto.API.Controllers.Adapters
             _baseUrl = baseUrl;
         }
 
-        public ApiResponse Adapt(UrlMangerServiceResponse source)
+        public JsonResult Adapt(UrlMangerServiceResponse source)
         {
             if (source == null)
                 throw new ArgumentNullException("source cannot be null");
 
-            return new ApiResponse
+            return new JsonResult($"{_baseUrl}{source.Url}")
             {
-                HttpStatusCode = source.ResponseStatus,
-                Url = $"{_baseUrl}{source.Url}"
-            };
+                StatusCode = (int)source.ResponseStatus
+            };            
         }
     }
 }

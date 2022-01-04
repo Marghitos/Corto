@@ -1,22 +1,22 @@
 ﻿using Corto.BL.Models;
 using Corto.Common.DTO;
 using Corto.Common.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 
 namespace Corto.API.Controllers.Adapters
 {
-    public class UrlManagerServiceResponseExpandToApiResponseAdapter : IAdapter<UrlMangerServiceResponse, ApiResponse>
+    public class UrlManagerServiceResponseExpandToApiResponseAdapter : IAdapter<UrlMangerServiceResponse, JsonResult>
     {
-        public ApiResponse Adapt(UrlMangerServiceResponse source)
+        public JsonResult Adapt(UrlMangerServiceResponse source)
         {
             if (source == null)
                 throw new ArgumentNullException("source cannot be null");
 
-            return new ApiResponse
+            return new JsonResult(source.Url)
             {
-                HttpStatusCode = source.ResponseStatus,
-                Url = source.Url
+                StatusCode = (int)source.ResponseStatus
             };
         }
     }

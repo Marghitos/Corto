@@ -10,6 +10,7 @@
                 <div *ngIf="f.url.errors.required">URL is required.</div>
                 <div *ngIf="f.url.errors.pattern">Please enter valid url.</div>
             </div>
+            <div *ngIf="isCommunicationError" class="alert alert-danger">An error happened. Please try again later</div>
         </div>
         <div class="col-sm-6 mt-2">
             <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Shorten</button>
@@ -21,7 +22,7 @@
         <a href="{{updatedUrl}}" class="shortened-url">{{updatedUrl}}</a>
     </div>
     <div class="col-sm-6">
-        <button class="btn btn-primary" *ngIf="updatedUrl.length>0" (click)="copyContent()">Copy to Clipboard</button>
+        <button class="btn btn-primary" *ngIf="updatedUrl?.length>0" (click)="copyContent()">Copy to Clipboard</button>
     </div>
 </div>
 <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="default" color="#fff" type="ball-fall" [fullScreen]="false">

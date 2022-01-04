@@ -19,26 +19,26 @@ namespace Corto.API.Controllers
         private readonly IKeyRangeService _keyRangeService;
         private readonly IUrlManagerService _urlManagerService;
         private readonly IAlgorithmService _algorithmService;
-        private readonly IAdapter<UrlMangerServiceResponse, ApiResponse> _urlManagerServiceResponseExpandToApiResponse;
-        private readonly IAdapter<UrlMangerServiceResponse, ApiResponse> _urlManagerServiceResponseShortenToApiResponse;
+        private readonly IAdapter<UrlMangerServiceResponse, JsonResult> _urlManagerServiceResponseExpandToApiResponse;
+        private readonly IAdapter<UrlMangerServiceResponse, JsonResult> _urlManagerServiceResponseShortenToApiResponse;
 
         public UrlShortenerController(IServiceProvider serviceProvider)
         {
             _keyRangeService = serviceProvider.GetService<IKeyRangeService>();
             _urlManagerService = serviceProvider.GetService<IUrlManagerService>();
             _algorithmService = serviceProvider.GetService<IAlgorithmService>();
-            _urlManagerServiceResponseExpandToApiResponse = serviceProvider.GetNamedService<IAdapter<UrlMangerServiceResponse, ApiResponse>>("Expand");
-            _urlManagerServiceResponseShortenToApiResponse = serviceProvider.GetNamedService<IAdapter<UrlMangerServiceResponse, ApiResponse>>("Shorten");
+            _urlManagerServiceResponseExpandToApiResponse = serviceProvider.GetNamedService<IAdapter<UrlMangerServiceResponse, JsonResult>>("Expand");
+            _urlManagerServiceResponseShortenToApiResponse = serviceProvider.GetNamedService<IAdapter<UrlMangerServiceResponse, JsonResult>>("Shorten");
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("shorten-url")]
-        public async Task<ApiResponse> ShortenUrl(string url)
+        public async Task<IActionResult> ShortenUrl([FromBody] string url)
         {
             if (!UrlUtils.IsUrlValid(url))
-                return new ApiResponse
+                return new JsonResult(url)
                 {
-                    HttpStatusCode = HttpStatusCode.BadRequest
+                    StatusCode = (int)HttpStatusCode.BadRequest
                 };
 
             var counter = _keyRangeService.Counter;
@@ -56,12 +56,12 @@ namespace Corto.API.Controllers
 
         [HttpGet]
         [Route("expand-url")]
-        public async Task<ApiResponse> ExpandUrl(string url)
+        public async Task<IActionResult> ExpandUrl(string url)
         {
             if (!UrlUtils.IsUrlValid(url))
-                return new ApiResponse
+                return new JsonResult(url)
                 {
-                    HttpStatusCode = HttpStatusCode.BadRequest
+                    StatusCode = (int)HttpStatusCode.BadRequest
                 };
 
             var decodedId = _algorithmService.RestoreSeedFromString(url).ToString();

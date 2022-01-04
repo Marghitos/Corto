@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ActivatedRoute, ParamMap, RouterModule, UrlSegment } from '@angular/router';
 import { HttpStatusCode } from '../../enum/http-status-code';
 import { environment } from '../../environments/environment';
@@ -11,7 +11,6 @@ import { environment } from '../../environments/environment';
 
 export class RedirectComponent implements OnInit {
     private _http: HttpClient;
-    private _shortenedUrl: ClientResponse;
     private _route: ActivatedRoute;
 
     public RedirectStatus: string;
@@ -31,13 +30,6 @@ export class RedirectComponent implements OnInit {
         });
     }
 
-    ApiResponseToClientResponse(apiResponse: ApiResponse): ClientResponse {
-        return {
-            url: apiResponse.url,
-            httpStatusCode: this.MapHttpStatusCode(apiResponse.httpStatusCode)
-        }
-    }
-
     MapHttpStatusCode(httpStatusCode: number): HttpStatusCode {
         switch (httpStatusCode) {
             case 200:
@@ -54,14 +46,22 @@ export class RedirectComponent implements OnInit {
     }
 
     GetDecodedUrl(url: string) {
-        let params = new HttpParams().set("url", url);
-        this._http.get<ApiResponse>(environment.apiUrl + 'api/url-shortener/expand-url', { params: params }).subscribe(result => {
-            this._shortenedUrl = this.ApiResponseToClientResponse(result);
-            switch (this._shortenedUrl.httpStatusCode) {
+        const httpOptions: {
+            observe; params;
+        } = {
+            observe: 'response',
+            params: new HttpParams().set("url", url)
+        };
+
+        this._http.get<any>(environment.apiUrl + 'api/url-shortener/expand-url', httpOptions).subscribe(result => {
+            switch (this.MapHttpStatusCode(result["status"])) {
                 case HttpStatusCode.Ok:
-                    this.RedirectStatus = "Redirecting to.. " + this._shortenedUrl.url;
-                    window.location.href = this._shortenedUrl.url;
-                    break;
+                    this.RedirectStatus = "Redirecting to.. " + result["body"];
+                    window.location.href = result["body"];
+                    break;                
+            }
+        }, error => {
+            switch (this.MapHttpStatusCode(error["status"])) {
                 case HttpStatusCode.BadRequest:
                     this.RedirectStatus = "There was an error. Please try again later.";
                     break;
@@ -72,17 +72,6 @@ export class RedirectComponent implements OnInit {
                     this.RedirectStatus = "Url is expired. Please create a new one.";
                     break;
             }
-        }, error => console.error(error));
+        });
     }
 }
-
-interface ApiResponse {
-    url: string;
-    httpStatusCode: number;
-}
-
-interface ClientResponse {
-    url: string;
-    httpStatusCode: HttpStatusCode;
-}
-
