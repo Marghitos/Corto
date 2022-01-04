@@ -35,7 +35,7 @@ namespace Corto.API.Controllers
         [Route("shorten-url")]
         public async Task<IActionResult> ShortenUrl([FromBody] string url)
         {
-            if (!UrlUtils.IsUrlValid(url))
+            if (!UrlUtils.IsExpandedUrlValid(url))
                 return new JsonResult(url)
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest
@@ -58,7 +58,7 @@ namespace Corto.API.Controllers
         [Route("expand-url")]
         public async Task<IActionResult> ExpandUrl(string url)
         {
-            if (!UrlUtils.IsUrlValid(url))
+            if (!UrlUtils.IsShortenedUrlValid(url))
                 return new JsonResult(url)
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest
