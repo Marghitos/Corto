@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ActivatedRoute, ParamMap, RouterModule, UrlSegment } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpStatusCode } from '../../enum/http-status-code';
 import { environment } from '../../environments/environment';
 
@@ -58,7 +58,7 @@ export class RedirectComponent implements OnInit {
                 case HttpStatusCode.Ok:
                     this.RedirectStatus = "Redirecting to.. " + result["body"];
                     window.location.href = result["body"];
-                    break;                
+                    break;
             }
         }, error => {
             switch (this.MapHttpStatusCode(error["status"])) {

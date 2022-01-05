@@ -6,13 +6,15 @@ namespace Corto.BL.Services
 {
     public class AlgorithmService : IAlgorithmService
     {
-        private const string Alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
-        private static readonly IDictionary<char, int> AlphabetIndex;
-        private static readonly int Base = Alphabet.Length;
+        private const string _alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
+        private readonly IDictionary<char, int> _alphabetIndex;
+        private readonly int _base;
 
-        static AlgorithmService()
+        public AlgorithmService()
         {
-            AlphabetIndex = Alphabet
+            _base = _alphabet.Length;
+
+            _alphabetIndex = _alphabet
                 .Select((c, i) => new { Index = i, Char = c })
                 .ToDictionary(c => c.Char, c => c.Index);
         }
@@ -22,12 +24,12 @@ namespace Corto.BL.Services
             var str = new StringBuilder();
             var i = seed;
 
-            if (i == 0) return Alphabet[0].ToString();
+            if (i == 0) return _alphabet[0].ToString();
 
             while (i > 0)
             {
-                str.Insert(0, Alphabet[i % Base]);
-                i /= Base;
+                str.Insert(0, _alphabet[i % _base]);
+                i /= _base;
             }
 
             return str.ToString();
@@ -36,7 +38,7 @@ namespace Corto.BL.Services
         public int RestoreSeedFromString(string str)
         {
             return str
-                    .Aggregate(0, (current, c) => current * Base + AlphabetIndex[c]);
+                    .Aggregate(0, (current, c) => current * _base + _alphabetIndex[c]);
         }
     }
 }

@@ -18,13 +18,13 @@ namespace Corto.Common.DataAccess
         public CosmosDbRepository(string databaseName, string containerName, string account, string key)
         {
             if (string.IsNullOrWhiteSpace(databaseName))
-                throw new ArgumentNullException("databaseName cannot be null or empty");
+                throw new ArgumentNullException(nameof(databaseName), "databaseName cannot be null or empty");
             if (string.IsNullOrWhiteSpace(containerName))
-                throw new ArgumentNullException("containerName cannot be null or empty");
+                throw new ArgumentNullException(nameof(containerName), $"{nameof(containerName)} cannot be null or empty");
             if (string.IsNullOrWhiteSpace(account))
-                throw new ArgumentNullException("account cannot be null or empty");
+                throw new ArgumentNullException(nameof(account), $"{nameof(account)} cannot be null or empty");
             if (string.IsNullOrWhiteSpace(key))
-                throw new ArgumentNullException("key cannot be null or empty");
+                throw new ArgumentNullException(nameof(key), $"{nameof(key)} cannot be null or empty");
 
             _databaseName = databaseName;
             _containerName = containerName;

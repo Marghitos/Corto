@@ -10,7 +10,7 @@ namespace Corto.BL.Adapters
         public KeyRangeServiceResponse Adapt(DataRow source)
         {
             if (source == null)
-                throw new ArgumentNullException("source cannot be null");
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} source cannot be null");
 
             return new KeyRangeServiceResponse
             {

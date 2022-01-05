@@ -1,4 +1,5 @@
-﻿using Corto.Common.DataAccess;
+﻿using Corto.BL.Exceptions;
+using Corto.Common.DataAccess;
 using Corto.Common.DTO;
 using Corto.Common.Interfaces;
 using System;
@@ -39,7 +40,7 @@ namespace Corto.BL.Services
             DataTable dataTable = dataSet.Tables[0];
 
             if (dataTable == null || dataTable?.Rows?.Count == 0)
-                throw new Exception("Result cannot be null or empty");
+                throw new KeyRangeServiceException("Result cannot be null or empty");
 
             return _dataRowToKeyRangeServiceResponseAdapter.Adapt(dataTable.Rows[0]);
         }

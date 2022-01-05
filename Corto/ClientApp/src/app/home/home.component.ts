@@ -1,10 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ActivatedRoute, ParamMap, RouterModule, UrlSegment } from '@angular/router';
+import { Component } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { NgxSpinnerService } from "ngx-spinner";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ClipboardModule, ClipboardService } from 'ngx-clipboard';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
     selector: 'app-home',

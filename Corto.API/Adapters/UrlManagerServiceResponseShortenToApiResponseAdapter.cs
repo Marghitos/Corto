@@ -17,12 +17,12 @@ namespace Corto.API.Controllers.Adapters
         public JsonResult Adapt(UrlMangerServiceResponse source)
         {
             if (source == null)
-                throw new ArgumentNullException("source cannot be null");
+                throw new ArgumentNullException(nameof(source),$"{nameof(source)} cannot be null");
 
             return new JsonResult($"{_baseUrl}{source.Url}")
             {
                 StatusCode = (int)source.ResponseStatus
-            };            
+            };
         }
     }
 }

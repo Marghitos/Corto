@@ -8,18 +8,18 @@ namespace Corto.Common.DataAccess
     {
         private readonly string _connectionString;
 
-        public SqlRepository(string serverName,string databaseName,string userName,string password,string port)
+        public SqlRepository(string serverName, string databaseName, string userName, string password, string port)
         {
             if (string.IsNullOrWhiteSpace(serverName))
-                throw new ArgumentNullException("serverName cannot be null or empty");
+                throw new ArgumentNullException(nameof(serverName), $"{nameof(serverName)} cannot be null or empty");
             if (string.IsNullOrWhiteSpace(databaseName))
-                throw new ArgumentNullException("databaseName cannot be null or empty");
+                throw new ArgumentNullException(nameof(databaseName), $"{nameof(databaseName)} cannot be null or empty");
             if (string.IsNullOrWhiteSpace(userName))
-                throw new ArgumentNullException("userName cannot be null or empty");
+                throw new ArgumentNullException(nameof(userName), $"{nameof(userName)} cannot be null or empty");
             if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentNullException("password cannot be null or empty");
+                throw new ArgumentNullException(nameof(password), $"{nameof(password)} cannot be null or empty");
             if (string.IsNullOrWhiteSpace(port))
-                throw new ArgumentNullException("port cannot be null or empty");
+                throw new ArgumentNullException(nameof(port), $"{nameof(port)} cannot be null or empty");
 
             var sqlConnectionStringBuilder = new SqlConnectionStringBuilder
             {
@@ -34,7 +34,7 @@ namespace Corto.Common.DataAccess
         public DataSet ExecuteStoredProcedure(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException("name cannot be null or empty");
+                throw new ArgumentNullException(nameof(name), $"{nameof(name)} cannot be null or empty");
 
             using (var sqlConnection = new SqlConnection(_connectionString))
             {

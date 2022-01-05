@@ -41,15 +41,27 @@ namespace Corto.API.Controllers
                     StatusCode = (int)HttpStatusCode.BadRequest
                 };
 
-            var counter = _keyRangeService.Counter;
-            var urlItem = new UrlItem
+            UrlMangerServiceResponse response;
+
+            try
             {
-                Id = counter.ToString(),
-                ShortenedUrl = _algorithmService.GenerateShortString(counter),
-                OriginalUrl = url,
-                ExpiryDate = DateTime.UtcNow
-            };
-            var response = await _urlManagerService.InsertShortenedUrlAsync(urlItem);
+                var counter = _keyRangeService.Counter;
+                var urlItem = new UrlItem
+                {
+                    Id = counter.ToString(),
+                    ShortenedUrl = _algorithmService.GenerateShortString(counter),
+                    OriginalUrl = url,
+                    ExpiryDate = DateTime.UtcNow
+                };
+                response = await _urlManagerService.InsertShortenedUrlAsync(urlItem);
+            }
+            catch (Exception)
+            {
+                response = new UrlMangerServiceResponse
+                {
+                    ResponseStatus = HttpStatusCode.InternalServerError
+                };
+            }
 
             return _urlManagerServiceResponseShortenToApiResponse.Adapt(response);
         }
